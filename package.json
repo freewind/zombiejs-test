@@ -5,7 +5,7 @@
   "main": "index.js",
   "dependencies": {
     "express": "^4.12.3",
-    "zombie": "^4.0.8"
+    "zombie": "^3.0.0"
   },
   "devDependencies": {},
   "scripts": {
