@@ -1,0 +1,15 @@
+<html>
+<head>
+    <script src="./js/jquery-1.11.2.js"></script>
+    <script>
+        $.get('/delay', function(data) {
+            $('#response').text(data);
+        });
+    </script>
+</head>
+<body>
+<h1>I'm sending an ajax: </h1>
+
+<div id="response">please wait for a while ...</div>
+</body>
+</html>
