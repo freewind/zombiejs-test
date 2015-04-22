@@ -9,6 +9,7 @@ describe('User visits /', function() {
     const browser = new Browser();
 
     beforeEach(function(done) {
+        console.log("in beforeEach");
         browser.visit('/', done);
     });
 
