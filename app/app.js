@@ -6,10 +6,22 @@ app.get('/', function(req, res) {
     res.send('Hello World!');
 });
 
-app.get('/delay', function(req, res) {
+app.get('/hi', function(req, res) {
+    res.send('Hi!')
+});
+
+app.get('/delay/:seconds', function(req, res) {
+    const seconds = req.param("seconds") || 1;
     setTimeout(function() {
-        res.send('Delayed Hello World!')
-    }, 5000);
+        res.send('Delayed Hello World in ' + seconds + 's!')
+    }, seconds * 1000);
+});
+
+app.get('/slow-name.js', function(req, res) {
+    setTimeout(function() {
+        res.header('content-type', 'text/javascript');
+        res.send("define([], function() { return { name: 'Freewind' }})");
+    }, 1000);
 });
 
 var server = app.listen(3000, function() {
