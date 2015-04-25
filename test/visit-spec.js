@@ -9,7 +9,7 @@ Browser.localhost('example.com', 3000);
 describe('browser.visit', function() {
 
     const browser = new Browser();
-    this.timeout(20000); // change mocha default timeout(2s)
+    this.timeout(10000); // change mocha default timeout(2s)
 
     // Note: We should never put assertion inside the callback of `browser.visit`
     // https://github.com/assaf/zombie/issues/903
@@ -84,6 +84,16 @@ describe('browser.visit', function() {
                 done(err);
             });
         })
+    });
+
+    describe('try another usage of done', function() {
+        // notice this usage of `done`
+        before(function(done) {
+            browser.visit('/delay/1', done)
+        });
+        it('should response 200 status', function() {
+            browser.assert.status(200);
+        });
     });
 
 });
