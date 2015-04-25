@@ -2,50 +2,35 @@ const Browser = require('zombie');
 const moment = require('moment');
 const expect = require('expectations');
 
-// We're going to make requests to http://example.com/signup
+// We're going to make requests to http://example.com/???
 // Which will be routed to our test server localhost:3000
 Browser.localhost('example.com', 3000);
 
+// Notice !!!!!!!!
+// For most of normal situations, we don't need to call `browser.wait`,
+// since `browser.visit` and other helper methods like `browser.pressButton` already take care of the waiting,
+// if timeout exception happens from there, it should be just thrown by `done(err)`
+// We should only use `browser.wait` when we do something but don't care its result, just let it timeout,
+// then check something in a reasonable time
 describe('browser.wait', function() {
 
     const browser = new Browser();
-    var spentInWait = 99999;
 
     this.timeout(10000);
 
     before(function(done) {
-        console.log("enter visit in before");
-        const start = moment();
-        console.log("visit /static/ajax.html at: " + start);
-        // browser.visit default timeout is 5s
-        // ajax.html page needs 8s to get ajax response
-        browser.visit('/static/ajax.html', function() {
-            const end = moment();
-            console.log("got content of /static/ajax.html at: " + end + ", spent: " + end.diff(start));
-            done();
-        });
+        console.log("######## browser.visit");
+        browser.visit('/static/ajax-button.html', done);
     });
 
-    before(function(done) {
-        console.log("enter wait in before");
-        const start = moment();
-        // although we specify 7s as timeout, but it actually waits only 3s(the value I expect)
-        browser.wait(7000, function() {
-            const end = moment();
-            spentInWait = end.diff(start);
-            console.log("########## in browser.wait, spent: " + spentInWait);
-            done();
-        });
-    });
-
-    it('should find "Delayed Hello World!" in page after a while', function() {
-        console.log(browser.html());
-
-        expect(spentInWait).toBeGreaterThan(3000);
-        expect(spentInWait).toBeLessThan(4000);
-
-        browser.assert.status(200);
-        browser.assert.text('#response', "Delayed Hello World in 8s!");
+    it('should find "Delayed Hello World!" in page after a while', function(done) {
+        browser.pressButton('#mybutton');
+        browser.wait(10000).then(function() {
+            console.log("######## testing");
+            console.log(browser.html());
+            browser.assert.status(200);
+            browser.assert.text('#response', "Delayed Hello World in 8s!");
+        }).then(done, done)
     });
 
 });
