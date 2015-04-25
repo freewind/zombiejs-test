@@ -12,13 +12,23 @@ module.exports = function() {
         browser.visit("/static/ajax-button.html", callback);
     });
 
-    this.Then(/^click on 'mybutton' button$/, function(callback) {
+    this.When(/^click on 'mybutton' button$/, function(callback) {
         browser.waitDuration = '10s';
         browser.pressButton("#mybutton", callback);
+    });
+
+    this.When(/^do nothing$/, function(callback) {
+        callback();
     });
 
     this.Then(/^see the updated content of '#response'$/, function(callback) {
         browser.assert.text('#response', 'Delayed Hello World in 8s!');
         callback();
     });
+
+    this.Then(/^see the updated content of '#test'$/, function(callback) {
+        browser.assert.text('#test', '456');
+        callback();
+    });
+
 };
