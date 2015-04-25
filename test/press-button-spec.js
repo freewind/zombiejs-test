@@ -18,6 +18,7 @@ describe('browser.pressButton', function() {
     });
 
     before(function(done) {
+        // browser.waitDuration = '10s';
         console.log("######## browser.pressButton");
         browser.pressButton('#mybutton', done);
     });
