@@ -102,6 +102,21 @@ describe('browser.visit', function() {
         })
     });
 
+    describe('we can use promise style, use catch', function() {
+        it("should only wait for 3s if not got the content", function(done) {
+            const start = moment();
+            browser.visit('/delay/1', {duration: '3s'}).then(function() {
+                const end = moment();
+                return end.diff(start);
+            }).then(function(spent) {
+                console.log("####### spent: " + spent);
+                expect(spent).toBeGreaterThan(1000);
+                expect(spent).toBeLessThan(2000);
+                done();
+            }).catch(done);
+        })
+    });
+
     describe('try another usage of done', function() {
         // notice this usage of `done`
         before(function(done) {
