@@ -18,12 +18,12 @@ describe('browser.visit', function() {
         before(function(done) {
             const start = moment();
             console.log('visit /static/plain.html at: ' + start);
-            browser.visit('/static/plain.html', function() {
+            browser.visit('/static/plain.html', function(err) {
                 const end = moment();
                 spent = end.diff(start);
                 // we should never put assertions inside `browser.visit`!!!
                 console.log('got content of /static/plain.html at: ' + end + ', spent: ' + spent);
-                done()
+                done(err);
             });
         });
 
@@ -32,16 +32,19 @@ describe('browser.visit', function() {
         });
     });
 
-
     describe('the default timeout is 5s', function() {
         var spent = 99999;
         before(function(done) {
             const start = moment();
             console.log('visit /delay/9 at: ' + start);
-            browser.visit('/delay/9', function() {
+            browser.visit('/delay/9', function(err) {
                 const end = moment();
                 spent = end.diff(start);
                 console.log('got content of /delay/9 at: ' + end + ', spent: ' + spent);
+                // Notice
+                // the `err` passed in is something like:
+                // Timeout: did not get to load all resources on this page
+                // but we choose to ignore it, without call `done(err)`
                 done();
             });
         });
@@ -49,6 +52,20 @@ describe('browser.visit', function() {
             expect(spent).toBeGreaterThan(5000);
             expect(spent).toBeLessThan(6000);
         })
+    });
+
+    describe('Timeout exception will be thrown if cannot get response in time', function() {
+        before(function(done) {
+            browser.visit('/delay/2', {duration: '1s'}, function(err) {
+                done(err);
+            });
+        });
+        // Notice:
+        // following assertion will have no chance to run, because the
+        // `browser.visit` will fail with a timeout exception
+        it("assert something", function() {
+            expect(1).toEqual(1);
+        });
     });
 
     describe('we can change the wait time', function() {
@@ -69,10 +86,9 @@ describe('browser.visit', function() {
         })
     });
 
-    describe('we can use promise style', function() {
+    describe('we can use promise style, put assertions in "then()"', function() {
         it("should only wait for 3s if not got the content", function(done) {
             const start = moment();
-            console.log('visit /delay/9 at: ' + start);
             browser.visit('/delay/1', {duration: '3s'}).then(function() {
                 const end = moment();
                 return end.diff(start);
