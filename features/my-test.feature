@@ -1,6 +1,6 @@
 Feature: my test
 
-  Scenario: Throw some error in zombiejs
-    Given do nothing
-    When throw exception in zombiejs
-    Then do nothing
+  Scenario: ajax-button
+    Given visit the /static/ajax-button.html
+    When click on 'mybutton' button
+    Then see the updated content of '#response'
