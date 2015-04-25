@@ -80,9 +80,9 @@ describe('browser.visit', function() {
                 console.log("####### spent: " + spent);
                 expect(spent).toBeGreaterThan(1000);
                 expect(spent).toBeLessThan(2000);
-            }).then(done, function(err) {
-                done(err);
-            });
+            }).then(done, done);
+            // Notice
+            // for mocha test, there is no `callback.fail`, which is for `cucumberjs`
         })
     });
 
